@@ -28,4 +28,9 @@ defmodule RegTokens.AccountsFixtures do
     [_, token | _] = String.split(captured_email.text_body, "[TOKEN]")
     token
   end
+
+  def registration_token_fixture(email \\ nil) do
+    {:ok, token} = RegTokens.Accounts.generate_registration_token(scoped_to_email: email)
+    token
+  end
 end
