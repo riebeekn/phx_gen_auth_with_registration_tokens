@@ -5,13 +5,13 @@ defmodule RegTokensWeb.UserRegistrationController do
   alias RegTokens.Accounts.User
   alias RegTokensWeb.UserAuth
 
-  def new(conn, _params) do
+  def new(conn, params) do
     changeset = Accounts.change_user_registration(%User{})
-    render(conn, "new.html", changeset: changeset)
+    render(conn, "new.html", changeset: changeset, token: params["token"])
   end
 
-  def create(conn, %{"user" => user_params}) do
-    case Accounts.register_user(user_params) do
+  def create(conn, %{"token" => token, "user" => user_params}) do
+    case Accounts.register_user_with_token(token, user_params) do
       {:ok, user} ->
         {:ok, _} =
           Accounts.deliver_user_confirmation_instructions(
@@ -24,7 +24,7 @@ defmodule RegTokensWeb.UserRegistrationController do
         |> UserAuth.log_in_user(user)
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        render(conn, "new.html", changeset: changeset, token: token)
     end
   end
 end

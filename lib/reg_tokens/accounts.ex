@@ -147,19 +147,7 @@ defmodule RegTokens.Accounts do
     |> Repo.update()
   end
 
-  @doc """
-  Registers a user.
-
-  ## Examples
-
-      iex> register_user(%{field: value})
-      {:ok, %User{}}
-
-      iex> register_user(%{field: bad_value})
-      {:error, %Ecto.Changeset{}}
-
-  """
-  def register_user(attrs) do
+  defp register_user(attrs) do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()

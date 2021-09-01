@@ -3,6 +3,8 @@ defmodule RegTokens.AccountsFixtures do
   This module defines test helpers for creating
   entities via the `RegTokens.Accounts` context.
   """
+  alias RegTokens.Accounts.User
+  alias RegTokens.Repo
 
   def unique_user_email, do: "user#{System.unique_integer()}@example.com"
   def valid_user_password, do: "hello world!"
@@ -15,10 +17,12 @@ defmodule RegTokens.AccountsFixtures do
   end
 
   def user_fixture(attrs \\ %{}) do
+    attrs = valid_user_attributes(attrs)
+
     {:ok, user} =
-      attrs
-      |> valid_user_attributes()
-      |> RegTokens.Accounts.register_user()
+      %User{}
+      |> User.registration_changeset(attrs)
+      |> Repo.insert()
 
     user
   end
